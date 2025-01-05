@@ -1,0 +1,5 @@
+Flask==3.1.0
+gunicorn==23.0.0
+openai==1.58.1
+pandas==2.2.3
+scikit-learn==1.6.0

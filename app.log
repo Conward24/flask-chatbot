@@ -1,0 +1,89 @@
+2024-12-27 15:48:51,772 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 15:48:51,779 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-27 15:49:21,788 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 15:49:21,788 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-27 15:49:40,304 - INFO - Received query: I feel overwhelmed as a new mom. | Topic: Mental Health
+2024-12-27 15:49:40,304 - INFO - Retrieved resources for topic 'Mental Health': [{'topic': 'Mental Health', 'content': 'Postpartum depression is common and treatable. Reach out to loved ones or professionals for help.', 'source': 'Postpartum Support International'}]
+2024-12-27 15:49:41,535 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-27 15:49:41,549 - INFO - AI response: I'm sorry to hear that you're feeling overwhelmed as a new mom. It's completely normal to feel this way, and you're not alone. Remember that it's okay to ask for help and support when you need it. It's brave to reach out to loved ones or professionals for assistance, and seeking help is a sign of strength, not weakness. Take care of yourself and know that you deserve all the support and care during this challenging time. If you ever need to talk, I'm here to listen and support you.
+2024-12-27 15:49:41,550 - INFO - 127.0.0.1 - - [27/Dec/2024 15:49:41] "POST /query HTTP/1.1" 200 -
+2024-12-27 18:01:43,333 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 18:01:43,333 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-27 18:02:05,790 - INFO - Received query: I feel overwhelmed as a new mom. | Topic: Mental Health | Emotion: sadness
+2024-12-27 18:02:05,791 - ERROR - Error occurred: 'NoneType' object has no attribute 'lower'
+2024-12-27 18:02:05,792 - INFO - 127.0.0.1 - - [27/Dec/2024 18:02:05] "[35m[1mPOST /query HTTP/1.1[0m" 500 -
+2024-12-27 18:07:04,245 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 18:07:04,246 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-27 18:07:15,609 - INFO - Received query: I feel overwhelmed as a new mom. | Topic: Mental Health | Emotion: sadness
+2024-12-27 18:07:15,609 - ERROR - Error occurred: 'NoneType' object has no attribute 'lower'
+2024-12-27 18:07:15,610 - INFO - 127.0.0.1 - - [27/Dec/2024 18:07:15] "[35m[1mPOST /query HTTP/1.1[0m" 500 -
+2024-12-27 18:14:46,598 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 18:14:46,598 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-27 18:15:03,368 - INFO - Received query: I feel overwhelmed as a new mom. | Topic: Mental Health | Emotion: sadness
+2024-12-27 18:15:03,369 - INFO - Emotion tag received: sadness
+2024-12-27 18:15:03,369 - ERROR - Error occurred: 'NoneType' object has no attribute 'lower'
+2024-12-27 18:15:03,370 - INFO - 127.0.0.1 - - [27/Dec/2024 18:15:03] "[35m[1mPOST /query HTTP/1.1[0m" 500 -
+2024-12-27 18:23:46,909 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 18:23:46,910 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-27 18:23:56,045 - INFO - Received query: I feel overwhelmed as a new mom. | Topic: Mental Health | Emotion: sadness
+2024-12-27 18:23:56,045 - INFO - Emotion tag received: sadness
+2024-12-27 18:23:56,045 - WARNING - No matches found for tag: sadness; returning default response.
+2024-12-27 18:23:57,337 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-27 18:23:57,349 - INFO - AI response: I'm sorry to hear that you're feeling overwhelmed as a new mom. It's completely normal to feel this way, and you're not alone in these feelings. Taking care of a newborn can be challenging, but it's important to remember to take care of yourself too. You are doing an amazing job, and seeking help is a positive step towards feeling better. Remember, it's okay to ask for help from loved ones or professionals. Your well-being is important, and there are resources available to support you. How can I support you further today?
+2024-12-27 18:23:57,350 - INFO - 127.0.0.1 - - [27/Dec/2024 18:23:57] "POST /query HTTP/1.1" 200 -
+2024-12-27 18:39:20,644 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-27 18:39:20,645 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-30 09:37:46,557 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-30 09:37:46,557 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-30 09:39:17,150 - INFO - Received query: I’ve been feeling really lonely lately. | Topic: Mental Health | Emotion: lonely
+2024-12-30 09:39:17,151 - INFO - Emotion tag received: lonely
+2024-12-30 09:39:17,173 - WARNING - No matches found for tag: lonely; returning default response.
+2024-12-30 09:39:18,840 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-12-30 09:39:18,855 - INFO - AI response: I'm really sorry to hear that you've been feeling lonely lately. You are not alone in feeling this way, and it's important to reach out for support when you're in need. Remember, seeking help is a sign of strength, and there are people who care about you and want to help you through this difficult time. Feel free to talk to me or reach out to loved ones or professionals for additional support. You deserve to feel supported and connected.
+2024-12-30 09:39:18,856 - INFO - 127.0.0.1 - - [30/Dec/2024 09:39:18] "POST /query HTTP/1.1" 200 -
+2025-01-02 21:48:54,035 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-02 21:48:54,040 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-02 22:10:25,086 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-02 22:10:25,088 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-02 22:13:42,830 - INFO - 127.0.0.1 - - [02/Jan/2025 22:13:42] "[33mGET / HTTP/1.1[0m" 404 -
+2025-01-02 22:13:43,033 - INFO - 127.0.0.1 - - [02/Jan/2025 22:13:43] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-01-02 22:14:01,987 - INFO - 127.0.0.1 - - [02/Jan/2025 22:14:01] "[33mGET / HTTP/1.1[0m" 404 -
+2025-01-02 22:16:05,789 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-02 22:16:05,789 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-02 22:16:44,182 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-02 22:16:44,182 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-02 22:19:31,647 - INFO - Received query: What should I eat during pregnancy? | Topic: Pregnancy Nutrition | Emotion: neutral
+2025-01-02 22:19:31,648 - INFO - Emotion tag received: neutral
+2025-01-02 22:19:33,845 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-02 22:19:33,868 - INFO - AI response: It's wonderful that you're looking out for your family member's health during her pregnancy. It's important to support her by encouraging a well-balanced diet that includes a variety of nutritious foods. Folic acid, as you mentioned, is crucial, and she should also focus on eating plenty of fruits, vegetables, whole grains, lean proteins, and healthy fats. If she has any specific dietary preferences or restrictions, it's important to find ways to meet her nutritional needs while respecting her cultural traditions. If she has any concerns or questions about her diet during pregnancy, encourage her to speak with her healthcare provider for personalized advice and guidance.
+2025-01-02 22:19:33,870 - INFO - 127.0.0.1 - - [02/Jan/2025 22:19:33] "POST /query HTTP/1.1" 200 -
+2025-01-02 22:25:26,959 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-02 22:25:26,959 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-02 22:25:54,042 - INFO - Received query: What should I eat during pregnancy? | Topic: Pregnancy Nutrition | Emotion: neutral
+2025-01-02 22:25:54,043 - INFO - Emotion tag received: neutral
+2025-01-02 22:25:55,695 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-02 22:25:55,705 - INFO - AI response: During pregnancy, it's important for me to focus on a healthy and balanced diet to support my well-being and the development of the baby. Some key nutrients to prioritize include folic acid, iron, calcium, and protein. Foods rich in these nutrients include leafy greens, legumes, dairy products, lean meats, and whole grains. It's essential for me to stay hydrated and also consider taking prenatal vitamins as recommended by my healthcare provider. Remember, it's okay to indulge in cravings occasionally, but overall, aiming for a variety of nutritious foods is key. If you have any specific dietary concerns or restrictions, it's a good idea to consult with a healthcare provider or a registered dietitian for personalized recommendations. Taking care of myself and my baby's health is a top priority during this special time.
+2025-01-02 22:25:55,706 - INFO - 127.0.0.1 - - [02/Jan/2025 22:25:55] "POST /query HTTP/1.1" 200 -
+2025-01-02 22:33:02,783 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-02 22:33:02,784 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-02 22:33:12,058 - INFO - Received query: What should I eat during pregnancy? | Topic: Pregnancy Nutrition | Emotion: neutral
+2025-01-02 22:33:12,058 - INFO - Emotion tag received: neutral
+2025-01-02 22:33:13,320 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-01-02 22:33:13,330 - INFO - AI response: Did you know that during pregnancy, it's important to eat a balanced diet that includes a variety of fruits, vegetables, whole grains, protein sources, and dairy products? 
+
+To support the healthy growth and development of your baby, make sure to include foods rich in folic acid, such as leafy greens, citrus fruits, and beans in your meals. Remember to also stay hydrated and consult with your healthcare provider for personalized dietary recommendations based on your individual needs. Your well-being and that of your baby are top priorities during this special time!
+2025-01-02 22:33:13,331 - INFO - 127.0.0.1 - - [02/Jan/2025 22:33:13] "POST /query HTTP/1.1" 200 -
