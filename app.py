@@ -3,6 +3,7 @@ import logging
 import random  # Ensure random is imported
 import os
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from openai import OpenAI  # Import OpenAI client
 
 # Configure logging
@@ -19,6 +20,9 @@ client = OpenAI(
 
 # Initialize the Flask app
 app = Flask(__name__)
+
+# Enable CORS
+CORS(app)
 
 # Load resources and empathetic responses
 try:
