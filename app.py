@@ -12,7 +12,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Get the OpenAI API key from environment variable
+# Get the OpenAI API key from the environment variable
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("OPENAI_API_KEY environment variable is not set.")
@@ -91,7 +91,7 @@ def query():
             ]
         )
 
-        assistant_message = response['choices'][0]['message']['content']
+        assistant_message = response["choices"][0]["message"]["content"]
         logging.info(f"AI response: {assistant_message}")
 
         return jsonify({"response": assistant_message})
