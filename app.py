@@ -1,5 +1,6 @@
 import json
 import logging
+import random  # Ensure random is imported
 import os
 from flask import Flask, request, jsonify
 from openai import OpenAI  # Import OpenAI client
@@ -47,7 +48,7 @@ def get_random_empathetic_response(tag):
         if entry.get("tags", "").lower() == tag.lower()
     ]
     if matches:
-        return random.choice(matches)["utterance"]
+        return random.choice(matches)["utterance"]  # Use random.choice to pick a response
 
     logging.warning(f"No matches found for tag: {tag}; returning default response.")
     return "I'm here to help in any way I can."
