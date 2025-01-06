@@ -1,11 +1,11 @@
 import json
-import random
 import logging
+import random
 import os
 from flask import Flask, request, jsonify
-import openai
+import openai  # OpenAI client
 
-# Initialize logging
+# Configure logging
 logging.basicConfig(
     filename="app.log",
     level=logging.INFO,
