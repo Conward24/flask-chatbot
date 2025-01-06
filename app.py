@@ -18,7 +18,7 @@ if not api_key:
     raise ValueError("OPENAI_API_KEY environment variable is not set.")
 
 # Configure the OpenAI API key
-openai.api_key = api_key
+client = api_key
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -83,7 +83,7 @@ def query():
         """
 
         # Call OpenAI API
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an empathetic and culturally inclusive assistant who directly answers the user's questions in the second person, focusing on their needs and concerns."},
