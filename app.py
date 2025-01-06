@@ -88,7 +88,7 @@ def query():
             model="gpt-3.5-turbo"  # Replace with "gpt-4" if applicable
         )
 
-        assistant_message = response["choices"][0]["message"]["content"]
+        assistant_message = response.choices[0].message["content"]
         logging.info(f"AI response: {assistant_message}")
 
         return jsonify({"response": assistant_message})
