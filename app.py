@@ -1,9 +1,8 @@
 import json
 import logging
-import random
 import os
 from flask import Flask, request, jsonify
-import openai  # OpenAI client
+from openai import OpenAI  # Import OpenAI client
 
 # Configure logging
 logging.basicConfig(
@@ -12,13 +11,10 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Get the OpenAI API key from the environment variable
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    raise ValueError("OPENAI_API_KEY environment variable is not set.")
-
-# Configure the OpenAI API key
-client = api_key
+# Initialize OpenAI client
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY")  # Environment variable for API key
+)
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -84,11 +80,11 @@ def query():
 
         # Call OpenAI API
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an empathetic and culturally inclusive assistant who directly answers the user's questions in the second person, focusing on their needs and concerns."},
                 {"role": "user", "content": prompt}
-            ]
+            ],
+            model="gpt-3.5-turbo"  # Replace with "gpt-4" if applicable
         )
 
         assistant_message = response["choices"][0]["message"]["content"]
