@@ -87,3 +87,8 @@
 
 To support the healthy growth and development of your baby, make sure to include foods rich in folic acid, such as leafy greens, citrus fruits, and beans in your meals. Remember to also stay hydrated and consult with your healthcare provider for personalized dietary recommendations based on your individual needs. Your well-being and that of your baby are top priorities during this special time!
 2025-01-02 22:33:13,331 - INFO - 127.0.0.1 - - [02/Jan/2025 22:33:13] "POST /query HTTP/1.1" 200 -
+2025-01-06 12:34:08,237 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.134:5000
+2025-01-06 12:34:08,238 - INFO - [33mPress CTRL+C to quit[0m
