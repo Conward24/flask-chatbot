@@ -41,7 +41,7 @@ from pinecone import Pinecone, ServerlessSpec, Index
 # Define the Pinecone index name
 index_name = "maternal-knowledge"  # Replace with your desired index name
 
-# Initialize Pinecone
+# Initialize Pinecone client
 pinecone_instance = Pinecone(
     api_key=os.environ.get("PINECONE_API_KEY")
 )
@@ -58,8 +58,13 @@ if index_name not in pinecone_instance.list_indexes().names():
         )
     )
 
+# Get the host for the index
+index_description = pinecone_instance.describe_index(index_name)
+host = index_description.host
+
 # Connect to the index
-pinecone_index = Index(index_name)
+pinecone_index = Index(index_name, host=host)
+
 
 # Helper function to search maternal topics
 def search_topics(query):
