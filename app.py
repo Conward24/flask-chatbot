@@ -36,8 +36,9 @@ except FileNotFoundError as e:
     maternal_data = []
     empathetic_responses = []
 
-# Pinecone Initialization
-index_name = "maternal-knowledge"
+from pinecone import Pinecone, ServerlessSpec, Index
+
+# Initialize Pinecone
 pinecone_instance = Pinecone(
     api_key=os.environ.get("PINECONE_API_KEY")
 )
@@ -55,7 +56,7 @@ if index_name not in pinecone_instance.list_indexes().names():
     )
 
 # Connect to the index
-pinecone_index = pinecone_instance.index(index_name)
+pinecone_index = Index(index_name)
 
 # Helper function to search maternal topics
 def search_topics(query):
