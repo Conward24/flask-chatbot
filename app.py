@@ -38,6 +38,7 @@ except FileNotFoundError as e:
 
 # Define the Pinecone index name
 index_name = "maternal-knowledge"  # Replace with your desired index name
+logging.info(f"PINECONE_API_KEY: {os.environ.get('PINECONE_API_KEY')}")
 
 # Initialize Pinecone client
 pinecone_instance = Pinecone(
