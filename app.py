@@ -1,10 +1,12 @@
 import json
 import logging
-import random  # Ensure random is imported
+import random
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from openai import OpenAI  # Import OpenAI client
+from openai import OpenAI
+from langchain_community.embeddings import OpenAIEmbeddings
+from pinecone import Pinecone, ServerlessSpec
 
 # Configure logging
 logging.basicConfig(
@@ -26,19 +28,41 @@ CORS(app)
 
 # Load resources and empathetic responses
 try:
-    with open("resources.json", "r") as f:
-        resources = json.load(f)
+    with open("structured_maternal_guide.json", "r", encoding="utf-8") as f:
+        maternal_data = json.load(f)
 
-    with open("empathetic_responses.json", "r") as f:
+    with open("empathetic_responses.json", "r", encoding="utf-8") as f:
         empathetic_responses = json.load(f)
 except FileNotFoundError as e:
     logging.error(f"File not found: {e}")
-    resources = []
+    maternal_data = []
     empathetic_responses = []
 
-# Helper function to retrieve resources for a specific topic
-def get_relevant_resources(topic):
-    return [res for res in resources if res["topic"].lower() == topic.lower()]
+# Initialize Pinecone
+index_name = "maternal-knowledge"  # Replace with your index name
+pinecone_instance = Pinecone(
+    api_key=os.environ.get("PINECONE_API_KEY")  # Use Render's environment variable
+)
+
+if index_name not in pinecone_instance.index_manager.list_indexes().names():
+    pinecone_instance.index_manager.create_index(
+        name=index_name,
+        dimension=1536,
+        metric='cosine',
+        spec=ServerlessSpec(
+            cloud='aws',
+            region=os.environ.get("PINECONE_ENVIRONMENT")  # Use Render's environment variable
+        )
+    )
+
+pinecone_index = pinecone_instance.index_manager.get_index(index_name)
+
+# Helper function to search maternal topics
+def search_topics(query):
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    query_vector = embeddings.embed_query(query)
+    results = pinecone_index.query(query_vector, top_k=5, include_metadata=True)
+    return [{"title": res["metadata"]["title"], "content": res["metadata"]["content"]} for res in results["matches"]]
 
 # Helper function to retrieve a random empathetic response based on tags (emotions)
 def get_random_empathetic_response(tag):
@@ -62,21 +86,23 @@ def query():
     try:
         # Parse the incoming request
         data = request.get_json()
-        user_message = data.get("query", "Write a haiku about AI.")
-        topic = data.get("topic", "General")
+        user_message = data.get("query", "What are the signs of pregnancy?")
+        topic = data.get("topic", None)
         emotion = data.get("emotion", "neutral")
 
         logging.info(f"Received query: {user_message} | Topic: {topic} | Emotion: {emotion}")
 
-        # Retrieve relevant resources and empathetic response
-        relevant_resources = get_relevant_resources(topic)
-        context = "\n".join([f"{res['content']} (Source: {res['source']})" for res in relevant_resources])
+        # Retrieve relevant maternal resources and empathetic response
+        relevant_resources = search_topics(user_message)
+        context = "\n\n".join([
+            f"Title: {res['title']}\nContent: {res['content']}" for res in relevant_resources
+        ])
         empathetic_phrase = get_random_empathetic_response(emotion)
 
         # Construct the OpenAI prompt
         prompt = f"""
         The user asked: "{user_message}"
-        Relevant Context: 
+        Relevant Context:
         {context}
 
         Empathetic Response: {empathetic_phrase}
@@ -84,9 +110,9 @@ def query():
         """
 
         # Call OpenAI API
-        response = client.chat.completions.create(
+        response = client.chat_completions.create(
             messages=[
-                {"role": "system", "content": "You are an empathetic and culturally inclusive assistant who directly answers the user's questions in the second person, focusing on their needs and concerns."},
+                {"role": "system", "content": "You are an empathetic and culturally inclusive women’s health assistant who specializes in maternal health and directly answers the user's questions in the second person, focusing on their needs and concerns."},
                 {"role": "user", "content": prompt}
             ],
             model="gpt-3.5-turbo"  # Replace with "gpt-4" if applicable
@@ -99,6 +125,29 @@ def query():
 
     except Exception as e:
         logging.error(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/test-pinecone', methods=['POST'])
+def test_pinecone():
+    try:
+        # Parse the query from the request
+        data = request.get_json()
+        query = data.get("query", "What are the signs of pregnancy?")
+        
+        embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+        query_vector = embeddings.embed_query(query)
+        results = pinecone_index.query(query_vector, top_k=5, include_metadata=True)
+
+        # Return Pinecone results
+        return jsonify({
+            "results": [
+                {"title": res["metadata"]["title"], "content": res["metadata"]["content"]}
+                for res in results["matches"]
+            ]
+        })
+
+    except Exception as e:
+        logging.error(f"Error during Pinecone test: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/', methods=['GET'])
