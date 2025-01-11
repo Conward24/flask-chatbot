@@ -22,6 +22,7 @@ MarkupSafe==3.0.2
 numpy>=1.25.0,<2.0
 openai==1.59.3
 packaging==24.2
+pinecone-client==5.0.1 
 pydantic==2.10.4
 pydantic_core==2.27.2
 six==1.15.0
