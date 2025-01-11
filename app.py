@@ -38,6 +38,9 @@ except FileNotFoundError as e:
 
 from pinecone import Pinecone, ServerlessSpec, Index
 
+# Define the Pinecone index name
+index_name = "maternal-knowledge"  # Replace with your desired index name
+
 # Initialize Pinecone
 pinecone_instance = Pinecone(
     api_key=os.environ.get("PINECONE_API_KEY")
