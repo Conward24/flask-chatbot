@@ -4,7 +4,7 @@ import random
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import Pinecone, ServerlessSpec, Index
 from langchain_community.embeddings import OpenAIEmbeddings
 from openai import OpenAI
 
@@ -36,8 +36,6 @@ except FileNotFoundError as e:
     maternal_data = []
     empathetic_responses = []
 
-from pinecone import Pinecone, ServerlessSpec, Index
-
 # Define the Pinecone index name
 index_name = "maternal-knowledge"  # Replace with your desired index name
 
@@ -65,12 +63,18 @@ host = index_description.host
 # Connect to the index
 pinecone_index = Index(index_name, host=host)
 
-
 # Helper function to search maternal topics
 def search_topics(query):
     embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
     query_vector = embeddings.embed_query(query)
-    results = pinecone_index.query(query_vector, top_k=5, include_metadata=True)
+    
+    # Use keyword arguments for Pinecone query
+    results = pinecone_index.query(
+        vector=query_vector,
+        top_k=5,
+        include_metadata=True
+    )
+    
     return [{"title": res["metadata"]["title"], "content": res["metadata"]["content"]} for res in results["matches"]]
 
 # Helper function to retrieve a random empathetic response based on tags (emotions)
@@ -134,6 +138,32 @@ def query():
 
     except Exception as e:
         logging.error(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/test-pinecone', methods=['POST'])
+def test_pinecone():
+    try:
+        data = request.get_json()
+        query = data.get("query", "What are the signs of pregnancy?")
+        
+        # Perform a Pinecone query
+        embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+        query_vector = embeddings.embed_query(query)
+        results = pinecone_index.query(
+            vector=query_vector,
+            top_k=5,
+            include_metadata=True
+        )
+
+        return jsonify({
+            "results": [
+                {"title": res["metadata"]["title"], "content": res["metadata"]["content"]}
+                for res in results["matches"]
+            ]
+        })
+
+    except Exception as e:
+        logging.error(f"Error during Pinecone test: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/', methods=['GET'])
