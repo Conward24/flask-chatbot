@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pinecone import Pinecone, ServerlessSpec, Index
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from openai import OpenAI
 
 # Configure logging
@@ -53,12 +53,15 @@ index_name = "maternal-knowledge"
 
 # Initialize Pinecone client with error handling
 try:
+    logging.info("Initializing Pinecone client...")
     pinecone_instance = Pinecone(
         api_key=pinecone_api_key
     )
-
+    logging.info("Pinecone client initialized successfully.")
+    
     # Check if the index exists; create it if it doesn't
     if index_name not in pinecone_instance.list_indexes().names():
+        logging.info(f"Creating index '{index_name}'...")
         pinecone_instance.create_index(
             name=index_name,
             dimension=1536,
@@ -68,18 +71,21 @@ try:
                 region=pinecone_environment
             )
         )
-
+        logging.info(f"Index '{index_name}' created successfully.")
+    
     # Get the host for the index
     index_description = pinecone_instance.describe_index(index_name)
     host = index_description.host
+    logging.info(f"Index host: {host}")
 
     # Connect to the index
     pinecone_index = Index(index_name, host=host)
     logging.info("Successfully connected to Pinecone index.")
 
 except Exception as e:
-    logging.error(f"Failed to initialize Pinecone: {str(e)}")
+    logging.error(f"Failed to initialize Pinecone: {str(e)}", exc_info=True)
     raise
+
 
 # Helper function to search maternal topics
 def search_topics(query):
@@ -164,15 +170,25 @@ def test_pinecone():
         data = request.get_json()
         query = data.get("query", "What are the signs of pregnancy?")
         
+        # Debug: Log the query being tested
+        logging.info(f"Test query received: {query}")
+        
         # Perform a Pinecone query
         embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
         query_vector = embeddings.embed_query(query)
+        
+        # Debug: Log the generated query vector
+        logging.info(f"Query vector: {query_vector}")
+        
         results = pinecone_index.query(
             vector=query_vector,
             top_k=5,
             include_metadata=True
         )
-
+        
+        # Debug: Log the results from Pinecone
+        logging.info(f"Pinecone query results: {results}")
+        
         return jsonify({
             "results": [
                 {"title": res["metadata"]["title"], "content": res["metadata"]["content"]}
@@ -181,8 +197,10 @@ def test_pinecone():
         })
 
     except Exception as e:
-        logging.error(f"Error during Pinecone test: {str(e)}")
+        # Log the full stack trace for debugging
+        logging.error(f"Error during Pinecone test: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/', methods=['GET'])
 def home():
