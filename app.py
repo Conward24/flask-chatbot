@@ -15,9 +15,21 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+# Validate and log environment variables
+pinecone_api_key = os.environ.get("PINECONE_API_KEY")
+pinecone_environment = os.environ.get("PINECONE_ENVIRONMENT")
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+
+logging.info(f"PINECONE_API_KEY: {'SET' if pinecone_api_key else 'NOT SET'}")
+logging.info(f"PINECONE_ENVIRONMENT: {pinecone_environment}")
+logging.info(f"OPENAI_API_KEY: {'SET' if openai_api_key else 'NOT SET'}")
+
+if not pinecone_api_key or not pinecone_environment:
+    raise ValueError("PINECONE_API_KEY or PINECONE_ENVIRONMENT is not set in environment variables.")
+
 # Initialize OpenAI client
 client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")  # Environment variable for API key
+    api_key=openai_api_key
 )
 
 # Initialize the Flask app
@@ -37,36 +49,41 @@ except FileNotFoundError as e:
     empathetic_responses = []
 
 # Define the Pinecone index name
-index_name = "maternal-knowledge"  # Replace with your desired index name
-logging.info(f"PINECONE_API_KEY: {os.environ.get('PINECONE_API_KEY')}")
+index_name = "maternal-knowledge"
 
-# Initialize Pinecone client
-pinecone_instance = Pinecone(
-    api_key=os.environ.get("PINECONE_API_KEY")
-)
-
-# Check if the index exists; create it if it doesn't
-if index_name not in pinecone_instance.list_indexes().names():
-    pinecone_instance.create_index(
-        name=index_name,
-        dimension=1536,
-        metric='cosine',
-        spec=ServerlessSpec(
-            cloud='aws',
-            region=os.environ.get("PINECONE_ENVIRONMENT")
-        )
+# Initialize Pinecone client with error handling
+try:
+    pinecone_instance = Pinecone(
+        api_key=pinecone_api_key
     )
 
-# Get the host for the index
-index_description = pinecone_instance.describe_index(index_name)
-host = index_description.host
+    # Check if the index exists; create it if it doesn't
+    if index_name not in pinecone_instance.list_indexes().names():
+        pinecone_instance.create_index(
+            name=index_name,
+            dimension=1536,
+            metric='cosine',
+            spec=ServerlessSpec(
+                cloud='aws',
+                region=pinecone_environment
+            )
+        )
 
-# Connect to the index
-pinecone_index = Index(index_name, host=host)
+    # Get the host for the index
+    index_description = pinecone_instance.describe_index(index_name)
+    host = index_description.host
+
+    # Connect to the index
+    pinecone_index = Index(index_name, host=host)
+    logging.info("Successfully connected to Pinecone index.")
+
+except Exception as e:
+    logging.error(f"Failed to initialize Pinecone: {str(e)}")
+    raise
 
 # Helper function to search maternal topics
 def search_topics(query):
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     query_vector = embeddings.embed_query(query)
     
     # Use keyword arguments for Pinecone query
@@ -148,7 +165,7 @@ def test_pinecone():
         query = data.get("query", "What are the signs of pregnancy?")
         
         # Perform a Pinecone query
-        embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
         query_vector = embeddings.embed_query(query)
         results = pinecone_index.query(
             vector=query_vector,
