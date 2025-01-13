@@ -20,7 +20,8 @@ pinecone_api_key = os.environ.get("PINECONE_API_KEY")
 pinecone_environment = os.environ.get("PINECONE_ENVIRONMENT")
 openai_api_key = os.environ.get("OPENAI_API_KEY")
 
-logging.info(f"PINECONE_API_KEY: {'SET' if pinecone_api_key else 'NOT SET'}")
+# Log the actual Pinecone API key for debugging (remove after debugging!)
+logging.info(f"PINECONE_API_KEY (DEBUG): {pinecone_api_key}")  # This will log the full key
 logging.info(f"PINECONE_ENVIRONMENT: {pinecone_environment}")
 logging.info(f"OPENAI_API_KEY: {'SET' if openai_api_key else 'NOT SET'}")
 
