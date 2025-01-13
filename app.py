@@ -48,6 +48,7 @@ except FileNotFoundError as e:
 
 # Define the Pinecone index name
 index_name = "maternal-knowledge"
+host = "https://maternal-knowledge-peybevm.svc.aped-4627-b74a.pinecone.io"  # Explicit host
 
 # Initialize Pinecone client with error handling
 try:
@@ -68,13 +69,8 @@ try:
             )
         )
         logging.info(f"Index '{index_name}' created successfully.")
-    
-    # Get the host for the index
-    index_description = pinecone_instance.describe_index(index_name)
-    host = index_description.host
-    logging.info(f"Index host: {host}")
 
-    # Connect to the index
+    # Connect to the index with explicit host
     pinecone_index = Index(index_name, host=host)
     logging.info("Successfully connected to Pinecone index.")
 
