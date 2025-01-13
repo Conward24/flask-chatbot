@@ -1,10 +1,9 @@
 import json
 import logging
-import random
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from pinecone import Pinecone, ServerlessSpec, Index
+from pinecone import Pinecone, Index
 from langchain_openai import OpenAIEmbeddings
 from openai import OpenAI
 
@@ -22,7 +21,7 @@ pinecone_environment = os.environ.get("PINECONE_ENVIRONMENT")
 openai_api_key = os.environ.get("OPENAI_API_KEY")
 
 if not pinecone_api_key or not pinecone_environment or not openai_api_key:
-    logging.error("Missing required environment variables. Please check PINECONE_API_KEY, PINECONE_ENVIRONMENT, and OPENAI_API_KEY.")
+    logging.error("Missing required environment variables. Check PINECONE_API_KEY, PINECONE_ENVIRONMENT, and OPENAI_API_KEY.")
     raise ValueError("One or more environment variables are missing.")
 
 # Initialize OpenAI client
@@ -50,12 +49,6 @@ except Exception as e:
     logging.error(f"Failed to initialize Pinecone: {str(e)}")
     raise
 
-# Mock data for maternal topics
-mock_results = [
-    {"metadata": {"title": "Mock Title 1", "content": "Mock Content 1"}},
-    {"metadata": {"title": "Mock Title 2", "content": "Mock Content 2"}}
-]
-
 # Helper function to search maternal topics
 def search_topics(query):
     try:
@@ -63,10 +56,17 @@ def search_topics(query):
         query_vector = embeddings.embed_query(query)
         logging.info(f"Query vector generated successfully: {query_vector}")
 
-        # Mocking Pinecone results for testing
+        # Query Pinecone for relevant results
+        results = pinecone_index.query(
+            vector=query_vector,
+            top_k=5,
+            include_metadata=True
+        )
+        logging.info(f"Pinecone query results: {results}")
+
         return [
             {"title": res["metadata"]["title"], "content": res["metadata"]["content"]}
-            for res in mock_results
+            for res in results.get("matches", [])
         ]
     except Exception as e:
         logging.error(f"Error in search_topics: {str(e)}", exc_info=True)
@@ -125,37 +125,32 @@ def query():
 @app.route('/test-pinecone', methods=['POST'])
 def test_pinecone():
     try:
-        # Parse the incoming request
         data = request.get_json()
         query = data.get("query", "What are the signs of pregnancy?")
-        
+
         logging.info(f"Test query received: {query}")
-        
-        # Generate the embedding for the query
+
         embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
         query_vector = embeddings.embed_query(query)
         logging.info(f"Generated query vector: {query_vector}")
-        
-        # Query Pinecone for relevant results
+
         results = pinecone_index.query(
             vector=query_vector,
-            top_k=5,  # Number of top results to retrieve
+            top_k=5,
             include_metadata=True
         )
-        logging.info(f"Query results: {results}")
-        
-        # Format the results to return
+        logging.info(f"Pinecone query results: {results}")
+
         formatted_results = [
             {"title": match["metadata"]["title"], "content": match["metadata"]["content"]}
-            for match in results["matches"]
+            for match in results.get("matches", [])
         ]
-        
-        return jsonify({"results": formatted_results})
-    
-    except Exception as e:
-        logging.error(f"Error during Pinecone test: {str(e)}", exc_info=True)
-        return jsonify({"error": str(e)}), 500
 
+        return jsonify({"results": formatted_results})
+
+    except Exception as e:
+        logging.error(f"Error during /test-pinecone: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/', methods=['GET'])
 def home():
