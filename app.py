@@ -174,19 +174,17 @@ def test_pinecone():
         logging.info(f"Test query received: {query}")
         
         # Perform a Pinecone query
-        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-        query_vector = embeddings.embed_query(query)
+        embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+        logging.info("Initialized OpenAI embeddings.")
         
-        # Debug: Log the generated query vector
-        logging.info(f"Query vector: {query_vector}")
+        query_vector = embeddings.embed_query(query)
+        logging.info(f"Generated query vector: {query_vector}")
         
         results = pinecone_index.query(
             vector=query_vector,
             top_k=5,
             include_metadata=True
         )
-        
-        # Debug: Log the results from Pinecone
         logging.info(f"Pinecone query results: {results}")
         
         return jsonify({
@@ -200,6 +198,7 @@ def test_pinecone():
         # Log the full stack trace for debugging
         logging.error(f"Error during Pinecone test: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
+
 
 
 @app.route('/', methods=['GET'])
