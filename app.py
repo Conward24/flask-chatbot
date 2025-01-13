@@ -11,8 +11,9 @@ from openai import OpenAI
 # Configure logging
 logging.basicConfig(
     filename="app.log",
-    level=logging.DEBUG,  # Set to DEBUG for detailed logs
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.DEBUG,  # DEBUG level for detailed logs
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    force=True  # Ensure global logging config
 )
 
 # Validate and log environment variables
@@ -20,8 +21,7 @@ pinecone_api_key = os.environ.get("PINECONE_API_KEY")
 pinecone_environment = os.environ.get("PINECONE_ENVIRONMENT")
 openai_api_key = os.environ.get("OPENAI_API_KEY")
 
-# Log the actual Pinecone API key for debugging (remove after debugging!)
-logging.info(f"PINECONE_API_KEY (DEBUG): {pinecone_api_key}")  # This will log the full key
+logging.info(f"PINECONE_API_KEY (DEBUG): {pinecone_api_key}")  # Debug log for API key (ensure it's removed later)
 logging.info(f"PINECONE_ENVIRONMENT: {pinecone_environment}")
 logging.info(f"OPENAI_API_KEY: {'SET' if openai_api_key else 'NOT SET'}")
 
@@ -49,7 +49,7 @@ except FileNotFoundError as e:
 
 # Define the Pinecone index name
 index_name = "maternal-knowledge"
-host = "https://maternal-knowledge-peybevm.svc.aped-4627-b74a.pinecone.io"  # Explicit host
+host = "https://maternal-knowledge-peybevm.svc.aped-4627-b74a.pinecone.io"
 
 # Initialize Pinecone client with error handling
 try:
@@ -73,7 +73,7 @@ try:
 
     # Connect to the index with explicit host
     pinecone_index = Index(index_name, host=host)
-    logging.info("Successfully connected to Pinecone index.")
+    logging.info(f"Successfully connected to Pinecone index '{index_name}' at host: {host}")
 
 except Exception as e:
     logging.error(f"Failed to initialize Pinecone: {str(e)}", exc_info=True)
