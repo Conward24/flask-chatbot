@@ -125,17 +125,37 @@ def query():
 @app.route('/test-pinecone', methods=['POST'])
 def test_pinecone():
     try:
-        # Mocking Pinecone test results
-        results = {
-            "results": [
-                {"title": "Mock Title 1", "content": "Mock Content 1"},
-                {"title": "Mock Title 2", "content": "Mock Content 2"}
-            ]
-        }
-        return jsonify(results)
+        # Parse the incoming request
+        data = request.get_json()
+        query = data.get("query", "What are the signs of pregnancy?")
+        
+        logging.info(f"Test query received: {query}")
+        
+        # Generate the embedding for the query
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+        query_vector = embeddings.embed_query(query)
+        logging.info(f"Generated query vector: {query_vector}")
+        
+        # Query Pinecone for relevant results
+        results = pinecone_index.query(
+            vector=query_vector,
+            top_k=5,  # Number of top results to retrieve
+            include_metadata=True
+        )
+        logging.info(f"Query results: {results}")
+        
+        # Format the results to return
+        formatted_results = [
+            {"title": match["metadata"]["title"], "content": match["metadata"]["content"]}
+            for match in results["matches"]
+        ]
+        
+        return jsonify({"results": formatted_results})
+    
     except Exception as e:
-        logging.error(f"Error during /test-pinecone: {str(e)}", exc_info=True)
+        logging.error(f"Error during Pinecone test: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/', methods=['GET'])
 def home():
