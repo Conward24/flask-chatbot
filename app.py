@@ -11,7 +11,7 @@ from openai import OpenAI
 # Configure logging
 logging.basicConfig(
     filename="app.log",
-    level=logging.INFO,
+    level=logging.DEBUG,  # Set to DEBUG for detailed logs
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
@@ -28,9 +28,7 @@ if not pinecone_api_key or not pinecone_environment:
     raise ValueError("PINECONE_API_KEY or PINECONE_ENVIRONMENT is not set in environment variables.")
 
 # Initialize OpenAI client
-client = OpenAI(
-    api_key=openai_api_key
-)
+client = OpenAI(api_key=openai_api_key)
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -54,11 +52,9 @@ index_name = "maternal-knowledge"
 # Initialize Pinecone client with error handling
 try:
     logging.info("Initializing Pinecone client...")
-    pinecone_instance = Pinecone(
-        api_key=pinecone_api_key
-    )
+    pinecone_instance = Pinecone(api_key=pinecone_api_key)
     logging.info("Pinecone client initialized successfully.")
-    
+
     # Check if the index exists; create it if it doesn't
     if index_name not in pinecone_instance.list_indexes().names():
         logging.info(f"Creating index '{index_name}'...")
@@ -86,20 +82,25 @@ except Exception as e:
     logging.error(f"Failed to initialize Pinecone: {str(e)}", exc_info=True)
     raise
 
-
 # Helper function to search maternal topics
 def search_topics(query):
-    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    query_vector = embeddings.embed_query(query)
-    
-    # Use keyword arguments for Pinecone query
-    results = pinecone_index.query(
-        vector=query_vector,
-        top_k=5,
-        include_metadata=True
-    )
-    
-    return [{"title": res["metadata"]["title"], "content": res["metadata"]["content"]} for res in results["matches"]]
+    try:
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+        query_vector = embeddings.embed_query(query)
+        logging.info(f"Query vector generated successfully: {query_vector}")
+
+        # Use keyword arguments for Pinecone query
+        results = pinecone_index.query(
+            vector=query_vector,
+            top_k=5,
+            include_metadata=True
+        )
+        logging.info(f"Query results from Pinecone: {results}")
+
+        return [{"title": res["metadata"]["title"], "content": res["metadata"]["content"]} for res in results["matches"]]
+    except Exception as e:
+        logging.error(f"Error in search_topics: {str(e)}", exc_info=True)
+        raise
 
 # Helper function to retrieve a random empathetic response based on tags (emotions)
 def get_random_empathetic_response(tag):
@@ -161,7 +162,7 @@ def query():
         return jsonify({"response": assistant_message})
 
     except Exception as e:
-        logging.error(f"Error occurred: {str(e)}")
+        logging.error(f"Error occurred in /query: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 @app.route('/test-pinecone', methods=['POST'])
@@ -174,9 +175,7 @@ def test_pinecone():
         logging.info(f"Test query received: {query}")
         
         # Perform a Pinecone query
-        embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
-        logging.info("Initialized OpenAI embeddings.")
-        
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
         query_vector = embeddings.embed_query(query)
         logging.info(f"Generated query vector: {query_vector}")
         
@@ -198,8 +197,6 @@ def test_pinecone():
         # Log the full stack trace for debugging
         logging.error(f"Error during Pinecone test: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
-
-
 
 @app.route('/', methods=['GET'])
 def home():
